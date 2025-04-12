@@ -10,24 +10,24 @@ POST http://127.0.0.1:8000/items/
 Content-Type: application/json
 
 {
-    "code": "I-001",
+    "code": "I-002",
     "name": "History Book",
     "unit": "Psc",
-    "description": "Books that tells history of the ancient"
+    "description": "Books that tells history of ancient"
 }
 
 ###
 #get detail items
-GET http://127.0.0.1:8000/items/T-004
+GET http://127.0.0.1:8000/items/I-002
 Content-Type: application/json
 
 ###
 #update items
-PUT http://127.0.0.1:8000/items/T-005
+PUT http://127.0.0.1:8000/items/I-002
 Content-Type: application/json
 
 {
-    "code": "T-001",
+    "code": "I-002",
     "name": "Item-1 update",
     "unit": "Psc",
     "description": "Product items 1 - update"
@@ -35,12 +35,17 @@ Content-Type: application/json
 
 ###
 #soft delete items
-DELETE http://127.0.0.1:8000/items/T-007
+DELETE http://127.0.0.1:8000/items/I-002
 Content-Type: application/json
 
 ###
 
+
+
+
 ### PURCHASES ###
+
+
 
 #get list purchases
 GET http://127.0.0.1:8000/purchases/
@@ -52,53 +57,59 @@ POST http://127.0.0.1:8000/purchases/
 Content-Type: application/json
 
 {
-    "code": "P-002",
-    "description": "Restock history books"
+    "code": "P-003",
+    "description": "Buy anime books"
 }
 
 ###
 #get purchases data
-GET http://127.0.0.1:8000/purchases/P-002
+GET http://127.0.0.1:8000/purchases/P-003
 Content-Type: application/json
 
 ###
 #update data puchase
-PUT http://127.0.0.1:8000/purchases/P-001
+PUT http://127.0.0.1:8000/purchases/P-002
 Content-Type: application/json
 
 {
-    "code": "P-001",
-    "description": "Buy history books"
+    "code": "P-002",
+    "description": "Buy history books-update"
 }
 
 ###
 #update data puchase
-DELETE http://127.0.0.1:8000/purchases/P-002
+DELETE http://127.0.0.1:8000/purchases/P-003
 Content-Type: application/json
 
 ###
 
 
 # PURCHASES DETAILS
+
+
 #get list purchases details
-GET http://127.0.0.1:8000/purchases/P-001/details
+GET http://127.0.0.1:8000/purchases/P-002/details
 Content-Type: application/json
 
 ###
 #save list purchases
-POST http://127.0.0.1:8000/purchases/P-002/details
+POST http://127.0.0.1:8000/purchases/P-003/details
 Content-Type: application/json
 
 {
     "item_code": "I-001",
     "quantity": 10,
-    "unit_price": 50000,
-    "header_code": "P-002"
+    "unit_price": 70000,
+    "header_code": "P-003"
 }
 
 ###
 
+
+
 ### SELLS ###
+
+
 
 #get list all sells
 GET http://127.0.0.1:8000/sell/
@@ -110,28 +121,28 @@ POST http://127.0.0.1:8000/sell/
 Content-Type: application/json
 
 {
-    "code": "S-001",
-    "description": "Sell history books to library"
+    "code": "S-002",
+    "description": "Sell anime books to wong"
 }
 
 ###
 #get data sells
-GET http://127.0.0.1:8000/sell/S-002
+GET http://127.0.0.1:8000/sell/S-001
 Content-Type: application/json
 
 ###
-#update data puchase
-PUT http://127.0.0.1:8000/sell/S-002
+#update data sells
+PUT http://127.0.0.1:8000/sell/S-001
 Content-Type: application/json
 
 {
-    "code": "S-002",
-    "description": "Purchase S-002 - updated"
+    "code": "S-001",
+    "description": "Purchase S-001 - updated"
 }
 
 ###
-#update data puchase
-DELETE http://127.0.0.1:8000/sell/S-004
+#delete data sells
+DELETE http://127.0.0.1:8000/sell/S-002
 Content-Type: application/json
 
 ###
@@ -149,3 +160,10 @@ Content-Type: application/json
     "quantity": 15,
     "header_code": "S-001"
 }
+
+###
+
+# REPORT #
+
+http://127.0.0.1:8000/report/I-001?start_date=2025-04-01&end_date=2025-04-12
+Content-Type: application/json

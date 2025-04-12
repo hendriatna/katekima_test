@@ -45,28 +45,9 @@ class SellsDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('header code dan body request purchase code tidak sesuai')
         
         if item.is_deleted:
-            raise serializers.ValidationError('Item code tidak ditemukan')
+            raise serializers.ValidationError('Item code tidak ditemukan atau sudah dihapus')
         
         if quantity > item.stock:
             raise serializers.ValidationError('Stock tidak mencukupi')
         
         return attrs
-    
-
-class SellsDetailItemsSerializer(serializers.ModelSerializer):
-    sellsdetails_set = serializers.SerializerMethodField()
-
-    def get_sellsdetails_set(self, obj):
-        sells = obj.sellsdetails_set.filter(is_deleted=False).order_by('created_at')
-        serializer = SellsDetailSerializer(sells, many=True)
-        return serializer.data
-    
-    class Meta:
-        model = Sells
-        fields = ['code', 'date', 'description', 'sellsdetails_set']
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        sells_detail = representation.pop('sellsdetails_set')
-        representation['details'] = sells_detail
-        return representation

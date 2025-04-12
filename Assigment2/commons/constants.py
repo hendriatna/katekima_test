@@ -4,10 +4,13 @@ class ResultMessage(Enum):
 
     GENERAL_SUCCESS_RESPONSE = (True, "S-001", "berhasil")
     DELETED_SUCCESS_RESPONSE = (True, "S-002", "Data berhasil dihapus")
+    NOT_FOUND_ISDELETED = (True, "S-003", "Data detail header tidak ditemukan, pastikan juga header_code atau item_code tidak terhapus")
 
     GENERAL_ERROR_RESPONSE = (False, "E-001", "Maaf, sistem sedang mengalami kendala")
     INPUT_ERROR = (False, "E-002", "Data input tidak sesuai")
     NOT_FOUND_ERROR = (False, "E-003", "Data tidak ditemukan")
+    ITEM_DELETED_ERROR = (False, "E-003", "Data item tidak ditemukan atau sudah terhapus")
+    
     
 
     def __init__(self, success, code, message):

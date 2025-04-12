@@ -44,36 +44,40 @@ class LFSR:
 
         return out_bit
 
-# -----------------------------------
-# 🔍 Basic LFSR (Hardcoded) for Test
-# -----------------------------------
+# basic lfsr function
 def basic_lfsr(size=4, state=None, taps=[0, 1], steps=10):
+    #if state exiist, copy state or make array with size and value 1
+    #ex: if size 5 > [1, 1, 1, 1, 1]
     reg = state[:] if state else [1] * size
     output = []
 
     for _ in range(steps):
+        #print array req and convert to string
         print(f"State: {''.join(map(str, reg))}", end=', ')
         feedback = 0
         for t in taps:
+            # 0 XOR reg in position taps, and set to feedback
             feedback ^= reg[t]
+        #set last array to out_bit
         out_bit = reg[-1]
+        #add out_bit to output array
         output.append(out_bit)
+        #insert feedback in front of array, and delete last array
         reg = [feedback] + reg[:-1]
 
         print(f"Output: {out_bit}")
 
     return output
 
-# -----------------------------------
-# ✅ Test the General LFSR
-# -----------------------------------
+
+# start the run file
 if __name__ == "__main__":
     size = 4
     taps = [0, 3]
     init_state = [0, 1, 1, 0]
     steps = 20
 
-    # Instantiate general LFSR
+    # initiate general LFSR
     lfsr = LFSR(size=size, state=init_state, taps=taps)
 
     # Compare outputs

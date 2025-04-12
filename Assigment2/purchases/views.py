@@ -4,11 +4,10 @@ from rest_framework.exceptions import ValidationError
 from commons.constants import ResultMessage as message
 from commons.headerresponse import ResultResponse as response
 from items.models import Items
-from .models import Purchases
+from .models import Purchases, PurchasesDetail
 from .serializers import (
     PurchaseSerializer,
     PurchaseDetailSerializer,
-    PurchaseDetailItemsSerializer,
 )
 
 
@@ -93,14 +92,27 @@ class PurchaseDetailView(APIView):
 
 class PurchaseDetailHeaderView(APIView):
     def get(self, request, header_code):
+        message_resp = message.GENERAL_SUCCESS_RESPONSE
         try:
-            purchase = Purchases.objects.prefetch_related('purchasesdetail_set').get(code=header_code, is_deleted=False)
-            serliazer = PurchaseDetailItemsSerializer(purchase)
+            #select purchase detail by is_deleted false, header_code, is_deleted header_code false, 
+            # and is_deleted item_code false order by created_at asc
+            purchase_detail = (
+                PurchasesDetail
+                .objects
+                .filter(
+                    is_deleted=False,
+                    header_code__code=header_code,
+                    header_code__is_deleted=False,
+                    item_code__is_deleted=False
+                )
+                .order_by('created_at')
+            )
+            #if data not exist, set message not found
+            if not purchase_detail.exists():
+                message_resp = message.NOT_FOUND_ISDELETED
 
-            return response.to_json(message.GENERAL_SUCCESS_RESPONSE, serliazer.data)
-        except Purchases.DoesNotExist:
-            #return error data not exist if item by code is none
-            return response.to_json(message.NOT_FOUND_ERROR)
+            serliazer = PurchaseDetailSerializer(purchase_detail, many=True)
+            return response.to_json(message_resp, serliazer.data)
         except Exception as e:
             #return error general for handling other error
             return response.to_json(message.GENERAL_ERROR_RESPONSE)
@@ -112,15 +124,15 @@ class PurchaseDetailHeaderView(APIView):
             with transaction.atomic():
                 if not Purchases.objects.filter(code=header_code, is_deleted=False).exists():
                     return response.to_json(message.NOT_FOUND_ERROR)
-
+                #validate data in serialize and send header_code
                 serializer = PurchaseDetailSerializer(data=request_data, context={'header_code':header_code})
                 if serializer.is_valid(raise_exception=True):
                     serializer.save()
-
-                    item = Items.objects.get(code=serializer.data['item_code'])
-                    item.stock = item.stock + serializer.data['quantity']
-                    item.balance = item.balance + (serializer.data['unit_price'] * serializer.data['quantity'])
-                    item.save()
+                #update stock and balance items
+                item = Items.objects.get(code=request_data['item_code'])
+                item.stock = item.stock + serializer.data['quantity']
+                item.balance = item.balance + (serializer.data['unit_price'] * serializer.data['quantity'])
+                item.save()
 
             return response.to_json(message.GENERAL_SUCCESS_RESPONSE, serializer.data)
         except ValidationError as e:

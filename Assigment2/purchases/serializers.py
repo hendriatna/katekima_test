@@ -43,26 +43,9 @@ class PurchaseDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('header code dan body request purchase code tidak sesuai')
         
         if attrs.get('item_code').is_deleted:
-            raise serializers.ValidationError('Item code tidak ditemukan')
+            raise serializers.ValidationError('Item code tidak ditemukan atau sudah terhapus')
         
         return attrs
-
-
-class PurchaseDetailItemsSerializer(serializers.ModelSerializer):
-    purchasesdetail_set = serializers.SerializerMethodField()
-
-    def get_purchasesdetail_set(self, obj):
-        purchases = obj.purchasesdetail_set.filter(is_deleted=False).order_by('created_at')
-        serializer = PurchaseDetailSerializer(purchases, many=True)
-        return serializer.data
-    
-    class Meta:
-        model = Purchases
-        fields = ['code', 'date', 'description', 'purchasesdetail_set']
     
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        purchase_detail = representation.pop('purchasesdetail_set')
-        representation['details'] = purchase_detail
-        return representation
-
+        return super().to_representation(instance)

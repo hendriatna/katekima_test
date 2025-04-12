@@ -1,6 +1,6 @@
 from datetime import datetime
 from fpdf import FPDF
-import datetime
+# import datetime
 
 
 # convert datetime to string format dd-mm-yyyy
@@ -11,6 +11,13 @@ def convert_date(date_string):
         return datetime.strftime(datetimes, '%d-%m-%Y')
     except Exception as e:
         return date_string
+    
+# def convert_datetime_to_string(datetimes):
+#     try:
+#         # datetimes = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%f')
+#         return datetime.strftime(datetimes, '%d-%m-%Y')
+#     except Exception as e:
+#         return date_string
     
 
 class StockPDF(FPDF):
@@ -71,12 +78,12 @@ class StockPDF(FPDF):
         self.ln()
 
     def add_balance_row(self, stock_qty, stock_price):
-        total = stock_qty * stock_price
+        # total = stock_qty * stock_price
         self.set_font("Arial", "B", 8)
         self.cell(155, 8, "Balance", border=1, align="L")
         self.cell(7, 8, str(stock_qty), border=1, align="L")
         # self.cell(10, 8, str(stock_price), border=1, align="R")
-        self.cell(28, 8, str(total), border=1, align="L")
+        self.cell(28, 8, str(stock_price), border=1, align="L")
         self.ln()
 
     def add_summary(self, total_in, total_out, stock_qty, stock_price):
@@ -85,5 +92,6 @@ class StockPDF(FPDF):
         self.set_font("Arial", "", 8)
         self.cell(35, 8, str(total_in), border=1,align="L")
         self.cell(35, 8, str(total_out), border=1, align="L")
-        self.cell(35, 8, str(stock_qty * stock_price), border=1, align="L")
+        self.cell(7, 8, str(stock_qty), border=1, align="L")
+        self.cell(28, 8, str(stock_price), border=1, align="L")
 
